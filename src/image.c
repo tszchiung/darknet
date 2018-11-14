@@ -480,15 +480,22 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
 
 void draw_detections_cv_v3(IplImage* show_img, detection *dets, int num, float thresh, char **names, image **alphabet, int classes, int ext_output)
 {
-    int i, j;
+    int i, j, haha, hehe;
+    float max = 0.00;
     if (!show_img) return;
     static int frame_id = 0;
     frame_id++;
-
+    for (haha=0; haha<num; ++haha) {
+	    for (hehe=0; hehe<classes; ++hehe) {
+	        max = (max>dets[haha].prob[hehe])? max:dets[haha].prob[hehe];
+	    }
+    }
     for (i = 0; i < num; ++i) {
         char labelstr[4096] = { 0 };
         int class_id = -1;
         for (j = 0; j < classes; ++j) {
+            if (max!=dets[i].prob[j])
+	            continue;
             if (dets[i].prob[j] > thresh) {
                 if (class_id < 0) {
                     strcat(labelstr, names[j]);
